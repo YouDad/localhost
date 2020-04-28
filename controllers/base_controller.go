@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"os"
+	"strconv"
 
 	"github.com/YouDad/localhost/log"
 	"github.com/astaxie/beego"
@@ -75,8 +76,19 @@ func (c *BaseController) ReturnErrNoPermission() {
 	c.ReturnJson(SimpleJSONResult{401, "无权访问"})
 }
 
-func (c *BaseController) Param(key string) string {
-	return c.Ctx.Input.Param(key)
+func (c *BaseController) ParamStr(key string) string {
+	return c.Ctx.Input.Param(":" + key)
+}
+
+func (c *BaseController) ParamInt(key string) int {
+	var ret int
+	str := c.ParamStr(key)
+	if str != "" {
+		var err error
+		ret, err = strconv.Atoi(str)
+		c.ReturnErr(err)
+	}
+	return ret
 }
 
 func ReadJsonFromFile(jsonPath string, dataRef interface{}) error {
