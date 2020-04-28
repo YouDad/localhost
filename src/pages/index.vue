@@ -79,15 +79,13 @@ export default Vue.extend({
 	},
 	computed: {
 		fileLines() {
-			let routine = this.routine
+			let routine = this.routine ? RegExp(this.routine) : undefined
 			let ports = this.port.checked
 			let levels = this.level.checked
 			let re = this.regexp ? RegExp(this.regexp) : undefined
 			return this.fileLinesOrderByLine.filter(line=>{
-				if (routine) {
-					if (routine !== line.routine) {
-						return false
-					}
+				if (routine && !routine.test(String(line.routine))) {
+					return false
 				}
 
 				if (re && !re.test(line.content)) {
