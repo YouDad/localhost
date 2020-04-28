@@ -7,3 +7,11 @@ export function List() {
 		data: {},
 	})
 }
+
+export function Line(filename, line) {
+	return request({
+		url: `/file/line/${filename}/${line}`,
+		method: 'get',
+		data: {},
+	})
+}
