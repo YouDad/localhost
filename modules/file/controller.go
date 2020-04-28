@@ -10,9 +10,11 @@ type FileController struct {
 	controllers.BaseController
 }
 
+const dir = "/home/manjaro/Log/blockchain/"
+
 // @router /file/list [get]
 func (c *FileController) List() {
-	dir, err := ioutil.ReadDir("/home/manjaro/Log/blockchain")
+	dir, err := ioutil.ReadDir(dir)
 	c.ReturnErr(err)
 
 	var ret []interface{}
