@@ -22,6 +22,9 @@ el-container.index
 
 		my-checkboxs(:obj="level")
 
+		el-input(v-model="regexp")
+			template(#prepend) 筛选内容
+
 	el-main
 		el-tabs(v-model="currentTab")
 			el-tab-pane(label="未匹配的日志" name="unmatch")
@@ -79,12 +82,18 @@ export default Vue.extend({
 			let routine = this.routine
 			let ports = this.port.checked
 			let levels = this.level.checked
+			let re = this.regexp ? RegExp(this.regexp) : undefined
 			return this.fileLinesOrderByLine.filter(line=>{
 				if (routine) {
 					if (routine !== line.routine) {
 						return false
 					}
 				}
+
+				if (re && !re.test(line.content)) {
+					return false
+				}
+
 				return ports.includes(line.port) && levels.includes(line.level)
 			})
 		},
@@ -114,6 +123,7 @@ export default Vue.extend({
 			},
 
 			routine: '',
+			regexp: '',
 
 			level: {
 				checked: ['DEBUG', 'INFO', 'WARN', 'ERROR', 'TRACE'],
