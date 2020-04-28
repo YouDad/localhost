@@ -15,10 +15,7 @@ el-container.index
 
 		el-button(@click="load") 加载
 
-		div
-			el-checkbox(:indeterminate="checkAllInde" v-model="checkAll" @change="onCheckPortAll") 全选
-			el-checkbox-group(v-model="checkedPort" @change="onCheckPortChange")
-				el-checkbox(v-for="port in ports" :label="port" :key="port") {{ port }}
+		my-checkboxs(:obj="port")
 
 		el-input(v-model="routine")
 			template(#prepend) 筛选线程
@@ -52,9 +49,14 @@ import {
 } from '@/api/file'
 import {to} from '@/utils'
 
+import MyCheckboxs from '@c/checkboxs'
+
 const RE = /(.*\/.*\/.*) (.*:.*:.*\..*)\[(.*)\]\[(.*)\]\[(.*)\]: { (.* .*) } (.*)/
 
 export default Vue.extend({
+	components: {
+		MyCheckboxs,
+	},
 	async created() {
 		let [err, ret] = await to(List())
 		if (err) {
@@ -73,7 +75,7 @@ export default Vue.extend({
 	computed: {
 		fileLines() {
 			let routine = this.routine
-			let ports = this.checkedPort
+			let ports = this.port.checked
 			return this.fileLinesOrderByLine.filter(line=>{
 				if (routine) {
 					if (routine !== line.routine) {
@@ -103,10 +105,11 @@ export default Vue.extend({
 
 			currentTab: 'unmatch',
 
-			checkAllInde: false,
-			checkAll: true,
-			checkedPort: [],
-			ports: [],
+			port: {
+				checked: [],
+				items: [],
+			},
+
 			routine: '',
 		}
 	},
@@ -134,9 +137,9 @@ export default Vue.extend({
 						source: res[6],
 						content: res[7],
 					})
-					if (!this.ports.includes(res[3])) {
-						this.ports.push(res[3])
-						this.checkedPort.push(res[3])
+					if (!this.port.items.includes(res[3])) {
+						this.port.items.push(res[3])
+						this.port.checked.push(res[3])
 					}
 				}
 			}
@@ -158,15 +161,6 @@ export default Vue.extend({
 		},
 		onTableChange(row) {
 			this.row = row
-		},
-		onCheckPortAll(val) {
-			this.checkedPort = val ? this.ports : []
-			this.checkAllInde = false
-		},
-		onCheckPortChange(val) {
-			let cnt = val.length
-			this.checkAll = cnt === this.ports.length
-			this.checkAllInde = 0 < cnt && cnt < this.ports.length
 		},
 	},
 })
