@@ -1,18 +1,13 @@
-package test
+package file
 
 import (
 	"io/ioutil"
 
 	"github.com/YouDad/localhost/controllers"
-	"github.com/astaxie/beego"
 )
 
 type FileController struct {
 	controllers.BaseController
-}
-
-func init() {
-	beego.Router("/file/list", new(FileController), "get:List")
 }
 
 // @router /file/list [get]

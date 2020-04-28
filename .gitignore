@@ -1,11 +1,10 @@
 localhost
-
 lastupdate.tmp
-main
-routers/commentsRouter_controllers.go
-*.log
+commentsRouter*.go
 
 node_modules/
 dist/
 yarn-error.log
 yarn.lock
+
+.*
