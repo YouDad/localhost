@@ -13,7 +13,7 @@ el-container.index
 		el-input.index__info(v-for="meta in metas" :value="row ? row[meta.key] : ''")
 			template(#prepend) {{ meta.text }}
 
-		el-button(@click="load") 加载
+		el-button.index__button(@click="load") 加载
 
 		my-checkboxs(:obj="port")
 
@@ -206,6 +206,10 @@ export default Vue.extend({
 
 	&__info {
 		font-size: $font-size--small;
+	}
+
+	&__button {
+		width: 100%;
 	}
 }
 </style>
