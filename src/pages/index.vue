@@ -20,6 +20,8 @@ el-container.index
 		el-input(v-model="routine")
 			template(#prepend) 筛选线程
 
+		my-checkboxs(:obj="level")
+
 	el-main
 		el-tabs(v-model="currentTab")
 			el-tab-pane(label="未匹配的日志" name="unmatch")
@@ -76,13 +78,14 @@ export default Vue.extend({
 		fileLines() {
 			let routine = this.routine
 			let ports = this.port.checked
+			let levels = this.level.checked
 			return this.fileLinesOrderByLine.filter(line=>{
 				if (routine) {
 					if (routine !== line.routine) {
 						return false
 					}
 				}
-				return ports.includes(line.port)
+				return ports.includes(line.port) && levels.includes(line.level)
 			})
 		},
 	},
@@ -111,6 +114,11 @@ export default Vue.extend({
 			},
 
 			routine: '',
+
+			level: {
+				checked: ['DEBUG', 'INFO', 'WARN', 'ERROR', 'TRACE'],
+				items: ['DEBUG', 'INFO', 'WARN', 'ERROR', 'TRACE'],
+			},
 		}
 	},
 	methods: {
