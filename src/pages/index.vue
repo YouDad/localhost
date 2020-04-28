@@ -25,6 +25,8 @@ el-container.index
 		el-input(v-model="regexp")
 			template(#prepend) 筛选内容
 
+		el-button.index__button(@click="onFilterClick") 过滤
+
 	el-main
 		el-tabs(v-model="currentTab")
 			el-tab-pane(label="未匹配的日志" name="unmatch")
@@ -77,31 +79,15 @@ export default Vue.extend({
 			this.load()
 		},
 	},
-	computed: {
-		fileLines() {
-			let routine = this.routine ? RegExp(this.routine) : undefined
-			let ports = this.port.checked
-			let levels = this.level.checked
-			let re = this.regexp ? RegExp(this.regexp) : undefined
-			return this.fileLinesOrderByLine.filter(line=>{
-				if (routine && !routine.test(String(line.routine))) {
-					return false
-				}
-
-				if (re && !re.test(line.content)) {
-					return false
-				}
-
-				return ports.includes(line.port) && levels.includes(line.level)
-			})
-		},
-	},
 	data() {
 		return {
 			fileInfos: [],
 			file: '',
+
 			fileLinesOrderByLine: [],
+			fileLines: [],
 			unmatchs: [],
+
 			row: {},
 			metas: [
 				{ text: "行号", key: "line", },
@@ -177,6 +163,23 @@ export default Vue.extend({
 		},
 		onTableChange(row) {
 			this.row = row
+		},
+		onFilterClick() {
+			let routine = this.routine ? RegExp(this.routine) : undefined
+			let ports = this.port.checked
+			let levels = this.level.checked
+			let re = this.regexp ? RegExp(this.regexp) : undefined
+			this.fileLines = this.fileLinesOrderByLine.filter(line=>{
+				if (routine && !routine.test(String(line.routine))) {
+					return false
+				}
+
+				if (re && !re.test(line.content)) {
+					return false
+				}
+
+				return ports.includes(line.port) && levels.includes(line.level)
+			})
 		},
 	},
 })
