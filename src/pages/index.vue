@@ -35,16 +35,24 @@ el-container.index
 					el-table-column(prop="content" label="内容")
 
 			el-tab-pane(label="按行数排序日志" name="lineOrder")
-				el-table(
-					:data="fileLines" height="80rem"
-					:row-class-name="lineLevel"
-					border highlight-current-row
-					@current-change="onTableChange"
-				)
-					el-table-column(prop="line" label="行数" width="70")
-					el-table-column(prop="port" label="端口" width="70")
-					el-table-column(prop="routine" label="线程" width="70")
-					el-table-column(prop="content" label="内容")
+				div.index__log-table
+					table.index__log-table__head
+						tr
+							th.index__log-table__head__param 行数
+							th.index__log-table__head__param 端口
+							th.index__log-table__head__param 线程
+							th.index__log-table__head__content 内容
+					div.index__log-table__body__wrapper
+						table.index__log-table__body
+							tr(
+								v-for="(line, index) in fileLines"
+								:class="lineLevel(line)"
+								@click="onTableChange(index)"
+							)
+								td.index__log-table__body__param {{ line.line }}
+								td.index__log-table__body__param {{ line.port }}
+								td.index__log-table__body__param {{ line.routine }}
+								td.index__log-table__body__content {{ line.content }}
 </template>
 
 <script>
@@ -146,7 +154,7 @@ export default Vue.extend({
 				}
 			}
 		},
-		lineLevel({row}) {
+		lineLevel(row) {
 			switch(row.level) {
 				case 'DEBUG':
 					return ['el-alert--info', 'is-light']
@@ -161,8 +169,8 @@ export default Vue.extend({
 			}
 			return ''
 		},
-		onTableChange(row) {
-			this.row = row
+		onTableChange(index) {
+			this.row = this.fileLines[index]
 		},
 		onFilterClick() {
 			let routine = this.routine ? RegExp(this.routine) : undefined
@@ -211,6 +219,57 @@ export default Vue.extend({
 
 	&__button {
 		width: 100%;
+	}
+
+	&__log-table {
+		font-size: $font-size--default;
+		word-break: break-all;
+
+		&__head {
+			width: 100%;
+
+			&__param {
+				width: 7rem;
+
+				border-top: 1px solid $color-grey-light-3;
+				border-left: 1px solid $color-grey-light-3;
+				border-bottom: 1px solid $color-grey-light-3;
+			}
+
+			&__content {
+				width: calc(100% - 21rem);
+
+				border-top: 1px solid $color-grey-light-3;
+				border-left: 1px solid $color-grey-light-3;
+				border-bottom: 1px solid $color-grey-light-3;
+				border-right: 1px solid $color-grey-light-3;
+			}
+		}
+
+		&__body {
+
+			&__wrapper {
+				height: 77rem;
+				overflow-y: auto;
+			}
+
+			&__param {
+				text-align: center;
+				width: 7rem;
+				padding: 1rem;
+
+				border-left: 1px solid $color-grey-light-3;
+				border-bottom: 1px solid $color-grey-light-3;
+			}
+
+			&__content {
+				padding: 1rem;
+
+				border-left: 1px solid $color-grey-light-3;
+				border-right: 1px solid $color-grey-light-3;
+				border-bottom: 1px solid $color-grey-light-3;
+			}
+		}
 	}
 }
 </style>
