@@ -41,7 +41,8 @@ func (c *FileController) Line() {
 	filename := c.ParamStr("file")
 	linenum := c.ParamInt("line")
 
-	ret := make(map[int]string)
+	var unmatch []interface{}
+	var match []interface{}
 
 	file, err := os.Open(dir + filename)
 	c.ReturnErr(err)
@@ -55,20 +56,45 @@ func (c *FileController) Line() {
 		}
 	}
 
-	reg := regexp.MustCompile("\x1b[^mK]*[mK]")
-	for i := linenum; i < linenum+1000; i++ {
+	reg, err := regexp.Compile("\x1b[^mK]*[mK]")
+	c.ReturnErr(err)
+
+	extract, err := regexp.Compile(`(.*/.*/.*) (.*:.*:.*\..*)\[(.*)\]\[(.*)\]\[(.*)\]: { (.* .*) } (.*)`)
+	c.ReturnErr(err)
+
+	for i := linenum; i < linenum+10000; i++ {
 		line, err := reader.ReadString('\n')
 
 		line = reg.ReplaceAllString(line, "")
+		line = line[:len(line)-1]
+		submatch := extract.FindStringSubmatch(line)
 
 		if io.EOF == err {
 			break
 		}
 
-		if i >= linenum {
-			ret[i] = line[:len(line)-1]
+		if len(submatch) < 8 {
+			unmatch = append(unmatch, struct {
+				Line    int    `json:"line"`
+				Content string `json:"content"`
+			}{i, line})
+		} else {
+			match = append(match, struct {
+				Line    int    `json:"line"`
+				Date    string `json:"date"`
+				Time    string `json:"time"`
+				Port    string `json:"port"`
+				Routine string `json:"routine"`
+				Level   string `json:"level"`
+				Source  string `json:"source"`
+				Content string `json:"content"`
+			}{i, submatch[1], submatch[2], submatch[3], submatch[4],
+				submatch[5], submatch[6], submatch[7]})
 		}
 	}
 
-	c.Return(ret)
+	c.Return(struct {
+		Unmatch interface{} `json:"unmatch"`
+		Match   interface{} `json:"match"`
+	}{unmatch, match})
 }

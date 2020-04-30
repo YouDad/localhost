@@ -66,8 +66,6 @@ import {to} from '@/utils'
 
 import MyCheckboxs from '@c/checkboxs'
 
-const RE = /(.*\/.*\/.*) (.*:.*:.*\..*)\[(.*)\]\[(.*)\]\[(.*)\]: { (.* .*) } (.*)/
-
 export default Vue.extend({
 	components: {
 		MyCheckboxs,
@@ -110,8 +108,8 @@ export default Vue.extend({
 			currentTab: 'unmatch',
 
 			port: {
-				checked: [],
-				items: [],
+				checked: ['1101', '1102', '1103', '1111', '2201', '2202', '2203', '2222'],
+				items: ['1101', '1102', '1103', '1111', '2201', '2202', '2203', '2222'],
 			},
 
 			routine: '',
@@ -132,27 +130,8 @@ export default Vue.extend({
 				return
 			}
 
-			for (let line in ret.data) {
-				let res = RE.exec(ret.data[line])
-				if (!res) {
-					this.unmatchs.push({line, content: ret.data[line]})
-				} else {
-					this.fileLinesOrderByLine.push({
-						line,
-						date: res[1],
-						time: res[2],
-						port: res[3],
-						routine: res[4],
-						level: res[5],
-						source: res[6],
-						content: res[7],
-					})
-					if (!this.port.items.includes(res[3])) {
-						this.port.items.push(res[3])
-						this.port.checked.push(res[3])
-					}
-				}
-			}
+			this.fileLinesOrderByLine = this.fileLinesOrderByLine.concat(ret.data.match)
+			this.unmatchs = this.unmatchs.concat(ret.data.unmatch)
 		},
 		lineLevel(row) {
 			switch(row.level) {
