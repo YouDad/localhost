@@ -2,6 +2,7 @@ package file
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -62,7 +63,8 @@ func (c *FileController) Line() {
 	extract, err := regexp.Compile(`(.*/.*/.*) (.*:.*:.*\..*)\[(.*)\]\[(.*)\]\[(.*)\]: { (.* .*) } (.*)`)
 	c.ReturnErr(err)
 
-	for i := linenum; i < linenum+10000; i++ {
+	var i int
+	for i = linenum; i < linenum+10000; i++ {
 		line, err := reader.ReadString('\n')
 		if io.EOF == err {
 			break
@@ -92,8 +94,14 @@ func (c *FileController) Line() {
 		}
 	}
 
-	c.Return(struct {
+	data := struct {
 		Unmatch interface{} `json:"unmatch"`
 		Match   interface{} `json:"match"`
-	}{unmatch, match})
+	}{unmatch, match}
+
+	c.ReturnJson(struct {
+		controllers.SimpleJSONResult
+		Data interface{} `json:"data"`
+	}{controllers.SimpleJSONResult{Code: 0,
+		Message: fmt.Sprintf("Success, line[%d, %d)", linenum, i)}, data})
 }
