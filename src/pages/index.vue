@@ -28,6 +28,10 @@ el-container.index
 		el-button.index__button(@click="onFilterClick") 过滤
 
 	el-main
+		el-slider(
+			v-model="range" range show-stops :step="sliderStep"
+			:max="sliderMax" :marks="sliderMarks"
+		)
 		el-tabs(v-model="currentTab")
 			el-tab-pane(label="未匹配的日志" name="unmatch")
 				el-table(:data="unmatchs" border height="80rem")
@@ -84,7 +88,25 @@ export default Vue.extend({
 		file() {
 			this.fileLinesOrderByLine = []
 			this.unmatchs = []
+			this.range = [0, 0]
 			this.load()
+		},
+	},
+	computed: {
+		sliderStep() {
+			return Math.ceil(this.fileLinesOrderByLine.length/1000) * 25
+		},
+		sliderMax() {
+			return Math.ceil(this.fileLinesOrderByLine.length/this.sliderStep)*this.sliderStep
+		},
+		sliderMarks() {
+			let marks = {}
+			let max = this.sliderMax
+			for (let i = 0; i < max; i += this.sliderStep*4) {
+				marks[i] = String(i)
+			}
+			marks[max] = String(max)
+			return marks
 		},
 	},
 	data() {
@@ -121,6 +143,8 @@ export default Vue.extend({
 				checked: ['DEBUG', 'INFO', 'WARN', 'ERROR', 'TRACE'],
 				items: ['DEBUG', 'INFO', 'WARN', 'ERROR', 'TRACE'],
 			},
+
+			range: [0, 0],
 		}
 	},
 	methods: {
@@ -158,7 +182,7 @@ export default Vue.extend({
 			let ports = this.port.checked
 			let levels = this.level.checked
 			let re = this.regexp ? RegExp(this.regexp) : undefined
-			this.fileLines = this.fileLinesOrderByLine.filter(line=>{
+			this.fileLines = this.fileLinesOrderByLine.slice(this.range[0], this.range[1]).filter(line=>{
 				if (routine && !routine.test(String(line.routine))) {
 					return false
 				}
