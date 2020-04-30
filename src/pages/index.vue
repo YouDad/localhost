@@ -156,6 +156,12 @@ export default Vue.extend({
 				return
 			}
 
+			if (!ret.data.match) {
+				ret.data.match = []
+			}
+			if (!ret.data.unmatch) {
+				ret.data.unmatch = []
+			}
 			this.fileLinesOrderByLine = this.fileLinesOrderByLine.concat(ret.data.match)
 			this.unmatchs = this.unmatchs.concat(ret.data.unmatch)
 		},
