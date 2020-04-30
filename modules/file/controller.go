@@ -64,14 +64,13 @@ func (c *FileController) Line() {
 
 	for i := linenum; i < linenum+10000; i++ {
 		line, err := reader.ReadString('\n')
+		if io.EOF == err {
+			break
+		}
 
 		line = reg.ReplaceAllString(line, "")
 		line = line[:len(line)-1]
 		submatch := extract.FindStringSubmatch(line)
-
-		if io.EOF == err {
-			break
-		}
 
 		if len(submatch) < 8 {
 			unmatch = append(unmatch, struct {
