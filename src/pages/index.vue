@@ -82,6 +82,8 @@ export default Vue.extend({
 	},
 	watch: {
 		file() {
+			this.fileLinesOrderByLine = []
+			this.unmatchs = []
 			this.load()
 		},
 	},
