@@ -35,7 +35,7 @@ el-container.index
 		el-tabs(v-model="currentTab")
 			el-tab-pane(label="未匹配的日志" name="unmatch")
 				el-table(:data="unmatchs" border height="80rem")
-					el-table-column(prop="line" label="行数" width="70")
+					el-table-column(prop="line" label="行数" width="100")
 					el-table-column(prop="content" label="内容")
 
 			el-tab-pane(label="按行数排序日志" name="lineOrder")
@@ -240,7 +240,7 @@ export default Vue.extend({
 			width: 100%;
 
 			&__param {
-				width: 7rem;
+				width: 10rem;
 
 				border-top: 1px solid $color-grey-light-3;
 				border-left: 1px solid $color-grey-light-3;
@@ -248,7 +248,7 @@ export default Vue.extend({
 			}
 
 			&__content {
-				width: calc(100% - 21rem);
+				width: calc(100% - 30rem);
 
 				border-top: 1px solid $color-grey-light-3;
 				border-left: 1px solid $color-grey-light-3;
@@ -266,7 +266,7 @@ export default Vue.extend({
 
 			&__param {
 				text-align: center;
-				width: 7rem;
+				width: 10rem;
 				padding: 1rem;
 
 				border-left: 1px solid $color-grey-light-3;
@@ -274,6 +274,7 @@ export default Vue.extend({
 			}
 
 			&__content {
+				width: calc(100% - 30rem);
 				padding: 1rem;
 
 				border-left: 1px solid $color-grey-light-3;
