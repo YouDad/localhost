@@ -1,19 +1,19 @@
 <template lang="pug">
-el-container.index
+el-container
 	el-aside
-		el-select.index__select(v-model="file")
+		el-select.select(v-model="file")
 			el-option(
 				v-for="fileInfo in fileInfos"
 				:key="fileInfo.Name"
 				:value="fileInfo.Name"
 			)
-				span.index__select__option-left {{ fileInfo.Name }}
-				span.index__select__option-right {{ fileInfo.Size }}
+				span.select__option-left {{ fileInfo.Name }}
+				span.select__option-right {{ fileInfo.Size }}
 
-		el-input.index__info(v-for="meta in metas" :value="row ? row[meta.key] : ''")
+		el-input.info(v-for="meta in metas" :value="row ? row[meta.key] : ''")
 			template(#prepend) {{ meta.text }}
 
-		el-button.index__button(@click="load") 加载
+		el-button.button(@click="load") 加载
 
 		my-checkboxs(:obj="port")
 
@@ -25,7 +25,7 @@ el-container.index
 		el-input(v-model="regexp")
 			template(#prepend) 筛选内容
 
-		el-button.index__button(@click="onFilterClick") 过滤
+		el-button.button(@click="onFilterClick") 过滤
 
 	el-main
 		el-slider(
@@ -39,24 +39,24 @@ el-container.index
 					el-table-column(prop="content" label="内容")
 
 			el-tab-pane(label="按行数排序日志" name="lineOrder")
-				div.index__log-table
-					table.index__log-table__head
+				div.log-table
+					table.log-table__head
 						tr
-							th.index__log-table__head__param 行数
-							th.index__log-table__head__param 端口
-							th.index__log-table__head__param 线程
-							th.index__log-table__head__content 内容
-					div.index__log-table__body__wrapper
-						table.index__log-table__body
+							th.log-table__head__param 行数
+							th.log-table__head__param 端口
+							th.log-table__head__param 线程
+							th.log-table__head__content 内容
+					div.log-table__body__wrapper
+						table.log-table__body
 							tr(
 								v-for="(line, index) in fileLines"
 								:class="lineLevel(line)"
 								@click="onTableChange(index)"
 							)
-								td.index__log-table__body__param {{ line.line }}
-								td.index__log-table__body__param {{ line.port }}
-								td.index__log-table__body__param {{ line.routine }}
-								td.index__log-table__body__content {{ line.content }}
+								td.log-table__body__param {{ line.line }}
+								td.log-table__body__param {{ line.port }}
+								td.log-table__body__param {{ line.routine }}
+								td.log-table__body__content {{ line.content }}
 </template>
 
 <script>
@@ -205,82 +205,80 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.index {
+.select {
 
-	&__select {
+	&__option {
 
-		&__option {
+		&-left {
+			float: left;
+			font-size: $font-size--default;
+		}
 
-			&-left {
-				float: left;
-				font-size: $font-size--default;
-			}
-
-			&-right {
-				float: right;
-				color: $color-grey-light-3;
-				font-size: $font-size--small;
-			}
+		&-right {
+			float: right;
+			color: $color-grey-light-3;
+			font-size: $font-size--small;
 		}
 	}
+}
 
-	&__info {
-		font-size: $font-size--small;
-	}
+.info {
+	font-size: $font-size--small;
+}
 
-	&__button {
+.button {
+	width: 100%;
+	margin: 0;
+}
+
+.log-table {
+	font-size: $font-size--default;
+	word-break: break-all;
+
+	&__head {
 		width: 100%;
-	}
 
-	&__log-table {
-		font-size: $font-size--default;
-		word-break: break-all;
+		&__param {
+			width: 10rem;
 
-		&__head {
-			width: 100%;
-
-			&__param {
-				width: 10rem;
-
-				border-top: 1px solid $color-grey-light-3;
-				border-left: 1px solid $color-grey-light-3;
-				border-bottom: 1px solid $color-grey-light-3;
-			}
-
-			&__content {
-				width: calc(100% - 30rem);
-
-				border-top: 1px solid $color-grey-light-3;
-				border-left: 1px solid $color-grey-light-3;
-				border-bottom: 1px solid $color-grey-light-3;
-				border-right: 1px solid $color-grey-light-3;
-			}
+			border-top: 1px solid $color-grey-light-3;
+			border-left: 1px solid $color-grey-light-3;
+			border-bottom: 1px solid $color-grey-light-3;
 		}
 
-		&__body {
+		&__content {
+			width: calc(100% - 30rem);
 
-			&__wrapper {
-				height: 77rem;
-				overflow-y: auto;
-			}
+			border-top: 1px solid $color-grey-light-3;
+			border-left: 1px solid $color-grey-light-3;
+			border-bottom: 1px solid $color-grey-light-3;
+			border-right: 1px solid $color-grey-light-3;
+		}
+	}
 
-			&__param {
-				text-align: center;
-				width: 10rem;
-				padding: 1rem;
+	&__body {
 
-				border-left: 1px solid $color-grey-light-3;
-				border-bottom: 1px solid $color-grey-light-3;
-			}
+		&__wrapper {
+			height: 77rem;
+			overflow-y: auto;
+		}
 
-			&__content {
-				width: calc(100% - 30rem);
-				padding: 1rem;
+		&__param {
+			text-align: center;
+			width: 10rem;
+			padding: 1rem;
 
-				border-left: 1px solid $color-grey-light-3;
-				border-right: 1px solid $color-grey-light-3;
-				border-bottom: 1px solid $color-grey-light-3;
-			}
+			border-left: 1px solid $color-grey-light-3;
+			border-bottom: 1px solid $color-grey-light-3;
+		}
+
+		&__content {
+			width: calc(100% - 30rem);
+			padding: 1rem;
+
+			border-left: 1px solid $color-grey-light-3;
+			border-right: 1px solid $color-grey-light-3;
+			border-bottom: 1px solid $color-grey-light-3;
 		}
 	}
 }

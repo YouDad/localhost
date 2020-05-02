@@ -1,6 +1,7 @@
 localhost
 lastupdate.tmp
 commentsRouter*.go
+go.sum
 
 node_modules/
 dist/
