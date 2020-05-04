@@ -26,6 +26,7 @@ el-container
 			template(#prepend) 筛选内容
 
 		el-button.button(@click="onFilterClick") 过滤
+		el-button.button(@click="loadAll") 全部加载
 
 	el-main
 		el-slider(
@@ -148,6 +149,13 @@ export default Vue.extend({
 		}
 	},
 	methods: {
+		async loadAll() {
+			let last
+			do {
+				last = this.fileLinesOrderByLine.length + this.unmatchs.length
+				await this.load()
+			} while (last !== this.fileLinesOrderByLine.length + this.unmatchs.length)
+		},
 		async load() {
 			let length = this.fileLinesOrderByLine.length + this.unmatchs.length
 			let [err, ret] = await to(Line(this.file, length))
