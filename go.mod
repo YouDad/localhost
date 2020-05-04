@@ -3,7 +3,7 @@ module github.com/YouDad/localhost
 go 1.13
 
 require (
-	github.com/YouDad/blockchain v0.0.0-20200501123423-963c32cfe133
+	github.com/YouDad/blockchain v0.0.0-20200502082504-dcfbfa62b01f
 	github.com/astaxie/beego v1.12.1
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.2
